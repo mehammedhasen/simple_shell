@@ -1,1 +1,1 @@
-Project to create a shell as a project
+Project to create a simple shell
