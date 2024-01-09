@@ -2,16 +2,15 @@
 
 /**
  * ch_interactive - returns true if shell is interactive mode
- * @get: input string file
+ * 
  *
  * Return: 1 if interactive mode, 0 otherwise
  */
 
-int ch_interactive(in_arg *get)
+int ch_interactive()
 {
-	int i = isatty(in_arg *get);
+	return(isatty(STDIN_FILENO));
 
-	return (i);
 }
 
 

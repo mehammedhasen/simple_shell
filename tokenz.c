@@ -1,14 +1,14 @@
 #include "shell.h"
 /**
  * _wordcount - counts number of words
- * @get: string input
+ * @sw: string input
  * @dl :delimer char
  * Return: int
  */
-int _wordcount(in_arg *get, char dl)
+int _wordcount(char *sw, char dl)
 {
 	int l, wc;
-	char *sw = get->str_ptr;
+	
 
 	l = 0, wc = 0;
 	if (*(sw + l) == dl)
@@ -25,29 +25,26 @@ int _wordcount(in_arg *get, char dl)
 }
 /**
  * _trspace - Moves adress to remove trailig whitespaces
- * @get: string input
+ * @st: string input
  * @dl:delimeter character
  * Return: Pointer
  */
-char *_trspace(in_arg *get, char dl)
+char *_trspace(char *st, char dl)
 {
-	char *st = get->str_ptr;
-
-	while (*st == dl)
+	while(*st == dl)
 		st++;
 	return (st);
 }
 /**
  * str_token - splits a string into words
- * @get: string input
+ * @str: string input
  * @dl :delimeter character
  * Return: Double Pointer
  */
-char **str_token(in_arg *get, char dl)
+char **str_token(char *str, char dl)
 {
 	char **s, *ts;
 	int l, l2, wc, i, j, fr, k;
-	char *str = get->str_ptr;
 
 	if (str == NULL || *str == 0)
 		return (0);

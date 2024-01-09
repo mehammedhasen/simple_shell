@@ -27,13 +27,13 @@ char *get_envpath(in_arg *get)
 char *find_file_path(in_arg *get, char *envpath, char *comd)
 {
 	struct stat st;
-	int stat_path, i;
-	char buf[PATH_MAX],  *path, **dir;
+	int stat_path = 0, i;
+	char buf[PATH_MAX],  *path = NULL, **dir = NULL;
 
 	envpath = _getenv(get, "PATH=");
 	if (!envpath)
 		return (NULL);
-	dir = tok_str(envpath, ":");
+	dir = str_token(envpath, ':');
 	if (!dir)
 		return (NULL);
 	for (i = 0; dir[i]; i++)
@@ -49,7 +49,7 @@ char *find_file_path(in_arg *get, char *envpath, char *comd)
 			path = malloc(sizeof(char) * (strlen(buf) + 1));
 			if (!path)
 				return (NULL);
-			strcpy(path, buf);
+			_strcpy(path, buf);
 			return (path);
 		}
 	}

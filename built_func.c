@@ -2,30 +2,49 @@
 /**
  * mycd - changes the current working directory of the shell
  * @get: array of arguments
- * Return: return 0 when fnesh
  */
 int mycd(in_arg *get)
 {
-	char  *newwd, *oldwd, *change_cd, buf[1024];
-	char *cwd;
+	char  *newdir, *cwd, buf[1024];
+	int change_cd;
 
 	cwd = getcwd(buf, 1024);
-	free(buf);
 	if (!cwd)
-		_puts("getcwd failurehere \n");
+		_puts("getcwd fail to show PWD rehere \n");
 
-	change_cd  = get->argv[1];
-	if (chdir(change_cd) != 0)
+	if (!get->argv[1])
 	{
-	newwd = getcwd(buf, 1024);
-	_puts(newwd);
+		newdir = _getenv(get, "HOME=");
+		if (!newdir)
+			change_cd = chdir((newdir = _getenv(get, "PWD=")) ? newdir : "/"); /* TODO: what should this be? */
+		else
+			change_cd = chdir(newdir);
+	}
+	else if (_strcmp(get->argv[1], "-") == 0)
+	{
+		if (!_getenv(get, "OLDPWD="))
+		{
+			_puts(cwd);
+			_putchar('\n');
+			return (1);
+		}
+		_puts(_getenv(get, "OLDPWD=")), _putchar('\n');
+		change_cd = chdir((newdir = _getenv(get, "OLDPWD=")) ? newdir : "/");
 	}
 	else
-	oldwd = cwd;
-	_puts(oldwd);
+		change_cd = chdir(get->argv[1]);
+	if (change_cd == -1)
+	{
+		error_print("cd cannot change directory  ");
+		_puts(get->argv[1]), _putchar('\n');
+	}
+	else
+	{
+		_setenv(get, "OLDPWD", _getenv(get, "PWD="));
+		_setenv(get, "PWD", getcwd(buf, 1024));
+	}
 	return (0);
 }
-
 /**
  * myexit- Exit the shell.
  * @get: Arguments.
@@ -34,11 +53,24 @@ int mycd(in_arg *get)
  */
 int myexit(in_arg *get)
 {
-	int status;
+	int st;
 
-	if (get->argv[1] != NULL)
-		status = _atoi(get->argv[1]);
-	return (exit(status));
+	if (get->argv[1])
+	{
+		st = _atoi(get->argv[1]);
+		if (st== -1)
+		{
+			get->status = 2;
+			error_print("Illegal number: ");
+			_puts(get->argv[1]);
+			_putchar('\n');
+			return (1);
+		}
+		return (-2);
+	}
+
+	return(-2);
+
 }
 /**
  * myhelp - changes the current directory of the process
@@ -48,13 +80,14 @@ int myexit(in_arg *get)
  */
 int myhelp(in_arg *get)
 {
-	char *ag_array;
+	char *ag_array, f = 'W';
 
 	ag_array =  get->argv[1];
-
+	putchar(f);
 	_puts("please wait help Function not yet implemented \n");
 	if (get->argv[1])
 		_puts(ag_array);
+
 	return (0);
 }
 /**

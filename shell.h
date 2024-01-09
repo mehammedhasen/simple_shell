@@ -15,7 +15,7 @@
 #define BUF_SIZE 1024
 #define PATH_MAx 4096
 #define HISTORY_FILE    "hsh shell history"
-#define HIST_MAX 4096
+#define HIST_SIZE 4096
 
 extern char **environ;
 
@@ -46,7 +46,7 @@ typedef struct list_node
  * @env: env link-list pointer
  * @environ: array of enviromental var
  * @env_flag: flag  for manipu env
- * @status: prv func return value 
+ * @status: prv func return value
  */
 
 typedef struct al_info
@@ -56,8 +56,7 @@ typedef struct al_info
 	char *file_path;
 	char *filname;
 	int argc;
-	int rdfld;
-	int historycount;
+	int count_hist;
 	list_s *env;
 	list_s *history;
 	char **environ;
@@ -77,17 +76,17 @@ typedef struct buil_call
 	int (*funcptr)(in_arg *);
 } buil_fun_tab;
 
-#define ALL_ARGUMENT {NULL, NULL, NULL, NULL, 0, 0, 0, NULL, NULL, NULL, 0, 0}
+#define ALL_ARGUMENT {NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, 0, 0}
 
 /* input string */
 int input_str(in_arg *get);
 void print_prompt(void);
-void delet_comment(char *buf);
+void delet_comment(char *bufin);
 
 /* atoi func list*/
 
 int is_delim(char c, char *delimeter);
-int ch_interactive(in_arg *get);
+int ch_interactive(void);
 int _isalpha(char c);
 int _atoi(char *strg);
 char *_memset(char *s, char b, size_t n);
@@ -125,10 +124,19 @@ list_s *node_st_wtpref(list_s *head, char *prefix, char c);
 char **alloc_environ(in_arg *get);
 int listdown_all_env(in_arg *get);
 char *_getenv(in_arg *get, const char *vrname);
-int _env(in_arg *get);
-int _unsetenv(in_arg *get);
-int _setenv(in_arg *get);
+int myenv(in_arg *get);
+int _unsetenv(in_arg *get, char *name);
+int _setenv(in_arg *get, char *name, char *value);
 char *mk_env_str(char *vrname, char *vrvalue);
+int myunsetenv(in_arg *get);
+int mysetenv(in_arg *get);
+
+/* history file*/
+char *creat_hist_flpath(in_arg *get);
+int write_hist_fle(in_arg *get);
+int read_hist_fle(in_arg *get);
+int creat_hist_list(in_arg *get, char *buf, int linenumber);
+int recount_hist(in_arg *get);
 
 
 /*builtin*/
@@ -139,42 +147,39 @@ int myhelp(in_arg *get);
 int myhistory(in_arg *get);
 
 /*var_info*/
-void clear_info_var(in_arg *get);
-char **set_info_var(in_arg *get);
+void clear_arg(in_arg *get);
+
 
 /*error_string*/
 int _putchar2fld(char c, int fld);
 int _putstr2fld(char *strg, int fld);
 void _put_str_er(char *strg);
 int _put_char_er(char c);
-/*int _putchar (char c);*/
+
+/*errot_signal*/
+void error_print(char *strg);
+int _putchar (char c);
+void signal_handler(void);
 
 /*file_path*/
 
 char *get_envpath(in_arg *get);
 char *find_file_path(in_arg *get, char *envpath, char *comd);
 
-/*history*/
-
-char *crt_histor_file(in_arg *get);
-int wrte_histor_file(in_arg *get);
-int read_histor_file(in_arg *get);
-int make_histor_list(in_arg *get, char *buf, int linecount);
-int number_histor_lnecount(in_arg *get);
 /*token-parse*/
-char **tok_str(char *strg, char *dlmter);
+char **str_token(char *str, char dl);
+char *_trspace(char *st, char dl);
+int _wordcount(char *sw, char dl);
 
 /*mainshell_loop*/
 
-int shell_loop(in_arg *get);
+
 int find_builtin_func(in_arg *get);
 void execute_file(in_arg *get);
 
 
 /*_getline*/
 size_t _getline(char **buptr, size_t *rd);
-/* token */
-char **tok_str(char *strg, char *dlmter);
 
 
 

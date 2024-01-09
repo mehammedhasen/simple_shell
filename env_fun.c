@@ -51,27 +51,29 @@ char *_getenv(in_arg *get, const char *vrname)
 
 
 /**
- * _env - prints all environment
+ * env - prints all environment
  * @get: Structure containing potential arguments. Used to maintain
  *          constant function prototype.
  * Return: Always 0
  */
-int _env(in_arg *get)
+int myenv(in_arg *get)
 {
-	return (print_strg_in_alnode(get->env));
+	print_strg_in_alnode(get->env);
+	return (0);
 }
 
 /**
  * _unsetenv - Remove an environment variable
  * @get: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
+ *
+ * @name: env variab name       
  *  Return: 1 on delete, 0 otherwise
  */
-int _unsetenv(in_arg *get)
+int _unsetenv(in_arg *get, char *name)
 {
 	unsigned int  i = 0;
 	list_s *node = get->env;
-	char *name = get->argv[1];
+/*	char *name = get->argv[1];*/
 	char *vlue;
 
 	while (node)
@@ -114,22 +116,26 @@ char *mk_env_str(char *vrname, char *vrvalue)
  *             or modify an existing one
  * @get: Structure containing potential arguments. Used to maintain
  *        constant function prototype.
+ * @name: env variab name
+ * @value: env varib value
  *  Return: Always 0
  */
-int _setenv(in_arg *get)
+int _setenv(in_arg *get, char *name, char *value)
 {
 
 	list_s *node = get->env;
 	char *nodstr;
-	char *name = get->argv[1];
-	char *value = get->argv[2];
 	char *vlue;
+
+/*	get->argv[1] = name;*/
+/*	get->argv[2] = value;*/
+	
 
 	if (get->argc >= 3)
 	{
 		if (!name || !value)
 			return (0);
-		nodstr = mk_env_str(get->argv[1], get->argv[2]);
+		nodstr = mk_env_str(name, value);
 
 		while (node)
 		{
@@ -148,4 +154,42 @@ int _setenv(in_arg *get)
 	free(nodstr);
 	get->env_flag = 1;
 	return (1);
+}
+/**
+ * mysetenv - Initialize a new environment variable,
+ *             or modify an existing one
+ * @get: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ *  Return: Always 0
+ */
+int mysetenv(in_arg *get)
+{
+	if (get->argc != 3)
+	{
+		_puts("Incorrect number of arguements\n");
+		return (1);
+	}
+	if (_setenv(get, get->argv[1], get->argv[2]))
+		return (0);
+	return (1);
+}
+/**
+ * myunsetenv - Remove an environment variable
+ * @get: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ *  Return: Always 0
+ */
+int myunsetenv(in_arg *get)
+{
+	int i;
+
+	if (get->argc == 1)
+	{
+		_puts("Too few arguements.\n");
+		return (1);
+	}
+	for (i = 1; i <= get->argc; i++)
+		_unsetenv(get, get->argv[i]);
+
+	return (0);
 }
