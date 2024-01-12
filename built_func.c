@@ -14,22 +14,22 @@ int mycd(in_arg *get)
 
 	if (!get->argv[1])
 	{
-		newdir = _getenv(get, "HOME=");
+		newdir = _getenv("HOME=");
 		if (!newdir)
-			change_cd = chdir((newdir = _getenv(get, "PWD=")) ? newdir : "/"); /* TODO: what should this be? */
+			change_cd = chdir((newdir = _getenv("PWD=")) ? newdir : "/"); /* TODO: what should this be? */
 		else
 			change_cd = chdir(newdir);
 	}
 	else if (_strcmp(get->argv[1], "-") == 0)
 	{
-		if (!_getenv(get, "OLDPWD="))
+		if (!_getenv("OLDPWD="))
 		{
 			_puts(cwd);
 			_putchar('\n');
 			return (1);
 		}
-		_puts(_getenv(get, "OLDPWD=")), _putchar('\n');
-		change_cd = chdir((newdir = _getenv(get, "OLDPWD=")) ? newdir : "/");
+		_puts(_getenv("OLDPWD=")), _putchar('\n');
+		change_cd = chdir((newdir = _getenv( "OLDPWD=")) ? newdir : "/");
 	}
 	else
 		change_cd = chdir(get->argv[1]);
@@ -40,7 +40,7 @@ int mycd(in_arg *get)
 	}
 	else
 	{
-		_setenv(get, "OLDPWD", _getenv(get, "PWD="));
+		_setenv(get, "OLDPWD", _getenv("PWD="));
 		_setenv(get, "PWD", getcwd(buf, 1024));
 	}
 	return (0);

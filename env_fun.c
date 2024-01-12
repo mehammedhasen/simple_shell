@@ -30,13 +30,13 @@ int listdown_all_env(in_arg *get)
 }
 /**
  * _getenv - gets the value of an environ variable
- * @get: Structure containing potential arguments. Used to maintain
+ * 
  *@vrname: env variable name
  * Return: the value of variable name
  */
-char *_getenv(in_arg *get, const char *vrname)
+char *_getenv(const char *vrname)
 {
-	list_s *node = get->env;
+	list_s *node;
 	char *vlue;
 
 	while (node)

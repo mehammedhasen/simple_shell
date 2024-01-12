@@ -123,7 +123,7 @@ list_s *node_st_wtpref(list_s *head, char *prefix, char c);
 
 char **alloc_environ(in_arg *get);
 int listdown_all_env(in_arg *get);
-char *_getenv(in_arg *get, const char *vrname);
+char *_getenv(const char *vrname);
 int myenv(in_arg *get);
 int _unsetenv(in_arg *get, char *name);
 int _setenv(in_arg *get, char *name, char *value);
@@ -131,12 +131,7 @@ char *mk_env_str(char *vrname, char *vrvalue);
 int myunsetenv(in_arg *get);
 int mysetenv(in_arg *get);
 
-/* history file*/
-char *creat_hist_flpath(in_arg *get);
-int write_hist_fle(in_arg *get);
-int read_hist_fle(in_arg *get);
-int creat_hist_list(in_arg *get, char *buf, int linenumber);
-int recount_hist(in_arg *get);
+
 
 
 /*builtin*/
@@ -144,7 +139,6 @@ int recount_hist(in_arg *get);
 int mycd(in_arg *get);
 int myexit(in_arg *get);
 int myhelp(in_arg *get);
-int myhistory(in_arg *get);
 
 /*var_info*/
 void clear_arg(in_arg *get);
@@ -164,20 +158,27 @@ void signal_handler(void);
 /*file_path*/
 
 char *get_envpath(in_arg *get);
-char *find_file_path(in_arg *get, char *envpath, char *comd);
+char *find_file_path(char *comd);
 
 /*token-parse*/
 char **str_token(char *str, char dl);
 char *_trspace(char *st, char dl);
 int _wordcount(char *sw, char dl);
 
-/*mainshell_loop*/
-
-
-int find_builtin_func(in_arg *get);
-void execute_file(in_arg *get);
-
-
+/*token 2*/
+char **tok_str(char *strg, char *dlmte);
+/*ex call 1&2*/
+void excu_semicol(in_arg *get,char *buf, char **envp);
+void excu_space(in_arg *get, char *buf, char **envp);
+void handle_echo_variable(char *buf);
+char *check_comment(char *buf);
+void print_prompt(void);
+void excu_and(in_arg *get,char *buf, char **envp);
+void excu_or(in_arg *get,char *buf, char **envp);
+/*excute_fle*/
+void excute_com(in_arg *get, char *buffer, char **envp);
+/*check buff chain*/
+int  check_bufchain(char *buf);
 /*_getline*/
 size_t _getline(char **buptr, size_t *rd);
 

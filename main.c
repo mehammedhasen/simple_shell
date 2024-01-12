@@ -1,35 +1,45 @@
 #include "shell.h"
-#include <stdio.h>
 /**
  * main - entry point
- *
+ * @arg_co: argument num
+ * @arg_vec: argument vec
+ * @envp: eniroment var
  * Return: 0 on success, 1 on error
  */
-int main(void)
+int main(int arg_co, char **arg_vec, char **envp)
 {
 	in_arg get[] = {ALL_ARGUMENT};
-	int stat = 0, start = 0;
-	
+	int flred = 2, status;
+	static char buf[BUF_SIZE];
 
-	listdown_all_env(get);
-	read_hist_fle(get);
-/*	signal(SIGINT,signal_handler);*/
+	pid_t fpid;
 
-	do {
+	while (arg_co == 2)
+	{
+	flred = open(arg_vec[1], O_RDONLY);
+	ch_interactive();
+	print_prompt();
+	read(flred, buf, sizeof(flred));
+	check_comment(buf);
+	fpid = fork();
+	if (fpid == -1)
+	{
+	perror("Error fork()");
+	clear_arg(get);
+	print_prompt();
+	}
+	if (fpid == 0)
+	excute_com(get, buf, envp);
+	else
+	waitpid(fpid, &status, 0);
 
-		input_str(get);
-		stat = find_builtin_func(get);
-		if (stat == -1)
-		{
-			putchar('\n');
-			execute_file(get);
-		
-		}
+	if (WIFSIGNALED(status))
+		error_print("signa inter-rupt");
+	else if (WEXITSTATUS(status))
+		_puts("pls exit normaly");
 
-		clear_arg(get);
-		start = 1;
-
-	} while(start);
-
+	}
 	return (0);
 }
+
+
