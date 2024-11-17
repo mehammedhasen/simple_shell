@@ -1,78 +1,76 @@
 #include "shell.h"
-/**
- * _putchar2fld - writes the character c to given fd
- * @c: The character to print
- * @fld: The filedescriptor to write to
- *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
- */
-int _putchar2fld(char c, int fld)
-{
-	static int i;
-	static char buf[BUF_SIZE];
-
-	buf[i++] = c;
-
-	return (write(fld, buf, i));
-
-}
 
 /**
- *_putstr2fld - prints an input string
- * @strg: the string to be printed
- * @fld: the filedescriptor to write to
+ * print_error - prints error messages to standard error
+ * @vars: pointer to struct of variables
+ * @msg: message to print
  *
- * Return: the number of chars put
+ * Return: void
  */
-int _putstr2fld(char *strg, int fld)
+void print_error(vars_t *vars, char *msg)
 {
-	int i = 0;
+	char *count;
 
-	if (!strg)
-		return (0);
-	while (*strg)
+	_puts2(vars->argv[0]);
+	_puts2(": ");
+	count = _uitoa(vars->count);
+	_puts2(count);
+	free(count);
+	_puts2(": ");
+	_puts2(vars->av[0]);
+	if (msg)
 	{
-		i += _putchar2fld(*strg++, fld);
+		_puts2(msg);
 	}
-	return (i);
+	else
+		perror("");
 }
 
-#include "shell.h"
-
 /**
- *_put_str_er - prints an input string
- * @strg: the string to be printed
+ * _puts2 - prints a string to standard error
+ * @str: string to print
  *
- * Return: Nothing
+ * Return: void
  */
-void _put_str_er(char *strg)
+void _puts2(char *str)
 {
-	int i = 0;
+	ssize_t num, len;
 
-	if (!strg)
-		return;
-	while (strg[i] != '\0')
+	num = _strlen(str);
+	len = write(STDERR_FILENO, str, num);
+	if (len != num)
 	{
-		_put_char_er(strg[i]);
-		i++;
+		perror("Fatal Error");
+		exit(1);
 	}
+
 }
 
-
 /**
- * _put_char_er - writes the character c to stderr
- * @c: The character to print
+ * _uitoa - converts an unsigned int to a string
+ * @count: unsigned int to convert
  *
- * Return: On success 1.
- * On error, -1 is returned, and errno is set appropriately.
+ * Return: pointer to the converted string
  */
-int _put_char_er(char c)
+char *_uitoa(unsigned int count)
 {
-	static int i;
-	static char buf[BUF_SIZE];
+	char *numstr;
+	unsigned int tmp, digits;
 
-	buf[i++] = c;
-
-	return (write(2, buf, i));
+	tmp = count;
+	for (digits = 0; tmp != 0; digits++)
+		tmp /= 10;
+	numstr = malloc(sizeof(char) * (digits + 1));
+	if (numstr == NULL)
+	{
+		perror("Fatal Error1");
+		exit(127);
+	}
+	numstr[digits] = '\0';
+	for (--digits; count; --digits)
+	{
+		numstr[digits] = (count % 10) + '0';
+		count /= 10;
+	}
+	return (numstr);
 }
